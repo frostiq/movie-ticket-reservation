@@ -1,6 +1,12 @@
-import akka.http.scaladsl.server.Directives._
+package me.bazhanau.ticketreservation
 
-trait Routes extends JsonFormat{
+import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.PathMatchers.Segment
+import me.bazhanau.ticketreservation.conversion.JsonProtocol
+import me.bazhanau.ticketreservation.models.MovieRegistration
+import me.bazhanau.ticketreservation.models.MovieReservation
+
+trait Routes extends JsonProtocol{
   val route =
     pathPrefix("movies") {
       path(Segment / Segment) { (imdbId: String, screenId: String) =>

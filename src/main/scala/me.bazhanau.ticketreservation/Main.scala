@@ -1,6 +1,9 @@
+package me.bazhanau.ticketreservation
+
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
+
 import scala.io.StdIn
 
 object Main extends Routes {
