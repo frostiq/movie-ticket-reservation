@@ -15,17 +15,15 @@ Form the project folder execute next command in console:
 sbt run
 ```
 
-It will start HTTP server on localhost:8888
+It will start HTTP server on localhost:8080
 
 ## How to use:
 
 ### Register a movie:
 
 ```
-curl http://localhost:8888/movies -X POST -d { "imdbId": "tt0111161",       \
-                                               "availableSeats": 100,       \
-                                               "screenId": "screen_123456" }
-
+curl http://localhost:8080/movies -X POST -H "Content-Type: application/json" \
+-d '{ "imdbId": "tt0111161", "availableSeats": 100, "screenId": "screen_123456" }'
 ```
 
 Where:
@@ -36,7 +34,7 @@ Where:
 ### Retrieve information about the movie
 
 ```
-curl http://localhost:8888/movies/{imdbId}/{screenId}
+curl http://localhost:8080/movies/{imdbId}/{screenId}
 ```
 
 Example of the response:
@@ -61,8 +59,8 @@ Where:
 ### Reserve a seat at the movie
 
 ```
-curl http://localhost:8888/reservations -X POST -d { "imdbId": "tt0111161", \
-                                                     "screenId": "screen_123456" }
+curl http://localhost:8080/reservations -X POST -H "Content-Type: application/json" \
+-d '{ "imdbId": "tt0111161", "screenId": "screen_123456" }'
 ```
 
 Where:
