@@ -22,7 +22,7 @@ It will start HTTP server on localhost:8080
 ### Register a movie:
 
 ```
-curl http://localhost:8080/movies -X POST -H "Content-Type: application/json" \
+curl http://localhost:8080/movies -H "Content-Type: application/json" \
 -d '{ "imdbId": "tt0111161", "availableSeats": 100, "screenId": "screen_123456" }'
 ```
 
@@ -59,7 +59,7 @@ Where:
 ### Reserve a seat at the movie
 
 ```
-curl http://localhost:8080/reservations -X POST -H "Content-Type: application/json" \
+curl http://localhost:8080/reservations -H "Content-Type: application/json" \
 -d '{ "imdbId": "tt0111161", "screenId": "screen_123456" }'
 ```
 
