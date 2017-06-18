@@ -1,4 +1,4 @@
-# me.bazhanau.ticketreservation.models.db.Movie Ticket Reservation System
+# Movie Ticket Reservation System
 
 [Task description on wiki](https://github.com/frostiq/movie-ticket-reservation/wiki/Task-description)
 

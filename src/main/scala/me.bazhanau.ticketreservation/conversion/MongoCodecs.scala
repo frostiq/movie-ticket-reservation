@@ -8,5 +8,8 @@ import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 
 trait MongoCodecs {
-  val codecRegistry = fromRegistries(fromProviders(classOf[MovieId], classOf[Movie]), DEFAULT_CODEC_REGISTRY )
+  val codecRegistry = fromRegistries(
+    fromProviders(classOf[MovieId], classOf[Movie]),
+    DEFAULT_CODEC_REGISTRY
+  )
 }
