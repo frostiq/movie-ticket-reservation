@@ -24,7 +24,7 @@ object Main extends App with Routes {
 
   Logger.getLogger("org.mongodb.driver").setLevel(Level.WARNING)
   val mongoClient = MongoClient()
-  val movieDao = new MongoMovieDao(mongoClient.getDatabase("test"))
+  val movieDao = new MongoMovieDao(mongoClient.getDatabase("movieTicketReservation"))
 
   val f = Http().singleRequest(_ : HttpRequest)
   val baseUri = Uri("http://www.omdbapi.com/")
