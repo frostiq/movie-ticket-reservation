@@ -8,6 +8,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpRequest
 import akka.http.scaladsl.model.Uri
 import akka.stream.ActorMaterializer
+import com.typesafe.config.ConfigFactory
 import me.bazhanau.ticketreservation.dao.MongoMovieDao
 import me.bazhanau.ticketreservation.dao.MovieTitleDao
 import me.bazhanau.ticketreservation.dao.MovieTitleWebDao
@@ -22,19 +23,21 @@ object Main extends App with Routes {
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
+  val config = ConfigFactory.load()
+
   Logger.getLogger("org.mongodb.driver").setLevel(Level.WARNING)
-  val mongoClient = MongoClient()
-  val movieDao = new MongoMovieDao(mongoClient.getDatabase("movieTicketReservation"))
+  val mongoClient = MongoClient(config.getString("mongodb.connectionString"))
+  val movieDao = new MongoMovieDao(mongoClient.getDatabase(config.getString("mongodb.dbName")))
 
   val f = Http().singleRequest(_ : HttpRequest)
-  val baseUri = Uri("http://www.omdbapi.com/")
-  val movieTitleDao: MovieTitleDao = new MovieTitleWebDao(f, baseUri, "289ba303")
+  val baseUri = Uri(config.getString("omdbapi.baseUrl"))
+  val movieTitleDao: MovieTitleDao = new MovieTitleWebDao(f, baseUri, config.getString("omdbapi.apiKey"))
 
   override val movieService = system.actorOf(MovieServiceActor.props(movieDao, movieTitleDao))
 
-  val bindingFuture = Http().bindAndHandle(routes, "localhost", 8080)
+  val bindingFuture = Http().bindAndHandle(routes, "localhost", config.getInt("server.port"))
 
-  println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
+  println(s"Server online at http://localhost:${config.getInt("server.port")}/\nPress RETURN to stop...")
   StdIn.readLine()
   bindingFuture
     .flatMap(_.unbind())

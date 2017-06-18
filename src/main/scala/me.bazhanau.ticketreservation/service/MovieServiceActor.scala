@@ -30,7 +30,7 @@ class MovieServiceActor(movieDao: MovieDao, movieTitleDao: MovieTitleDao) extend
           MovieId(registration.imdbId, registration.screenId),
           registration.availableSeats,
           0,
-          title.getOrElse("?")
+          title.getOrElse("")
         ))
         .flatMap(movieDao.insert)
         .map(_.toViewModel) pipeTo sender()

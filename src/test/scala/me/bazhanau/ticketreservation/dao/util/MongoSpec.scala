@@ -1,5 +1,6 @@
 package me.bazhanau.ticketreservation.dao.util
 
+import com.typesafe.config.ConfigFactory
 import org.mongodb.scala.MongoClient
 import org.mongodb.scala.MongoDatabase
 import org.scalatest._
@@ -14,8 +15,9 @@ abstract class MongoSpec extends AsyncFlatSpec
   override protected def beforeAll(): Unit = {
     try super.beforeAll()
     finally {
-      client = MongoClient()
-      db = client.getDatabase("test")
+      val config = ConfigFactory.load()
+      client = MongoClient(config.getString("mongodb.connectionString"))
+      db = client.getDatabase(config.getString("mongodb.dbName"))
     }
   }
 
