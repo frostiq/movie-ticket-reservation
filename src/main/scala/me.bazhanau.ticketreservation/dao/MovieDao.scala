@@ -14,7 +14,6 @@ import org.mongodb.scala.model.Updates._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.util.Failure
-import scala.util.Success
 
 trait MovieDao{
   def findOne(id: MovieId): Future[Option[Movie]]
@@ -37,9 +36,9 @@ class MongoMovieDao(db: MongoDatabase)(implicit executionContext: ExecutionConte
     collection.insertOne(movie)
       .toFuture()
       .transform{
-        case s @ Success(_) => s
         case Failure(e: MongoWriteException) =>
           Failure(DuplicateMovieException(e))
+        case x => x
         }
       .flatMap(x => findOne(movie._id))
       .map(_.get)

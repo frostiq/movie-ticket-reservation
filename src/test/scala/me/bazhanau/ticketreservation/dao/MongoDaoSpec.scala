@@ -3,31 +3,34 @@ package me.bazhanau.ticketreservation.dao
 import me.bazhanau.ticketreservation.model.mongo.Movie
 import me.bazhanau.ticketreservation.model.mongo.MovieId
 import org.mongodb.scala._
+import org.scalatest.Tag
 import org.scalatest._
 
 import scala.concurrent.Future
 import scala.util.Random
+
+object MongoDbTest extends Tag("MongoDB test")
 
 class MongoDaoSpec extends AsyncFlatSpec with Matchers with BeforeAndAfterAll{
 
   val client = MongoClient()
   val dao: MovieDao = new MongoMovieDao(client.getDatabase("test"))
 
-  "MongoDao" should "find movie after creation" in newMovie { movie =>
+  "MongoDao" should "find movie after creation" taggedAs MongoDbTest in newMovie { movie =>
     dao.findOne(movie._id).map(_ shouldBe Some(movie))
   }
 
-  it should "return None for non-existing movies" in {
+  it should "return None for non-existing movies" taggedAs MongoDbTest in {
     dao.findOne(MovieId("x", "x")).map(_ shouldBe None)
   }
 
-  it should "not allow to insert duplicate movie" in newMovie { movie =>
+  it should "not allow to insert duplicate movie" taggedAs MongoDbTest in newMovie { movie =>
     recoverToSucceededIf[DuplicateMovieException]{
       dao.insert(movie)
     }
   }
 
-  it should "decrease available seats after reservation" in newMovie { movie =>
+  it should "decrease available seats after reservation" taggedAs MongoDbTest in newMovie { movie =>
     dao.reserveSeat(movie._id)
       .map(res => {
         res shouldBe defined
@@ -36,7 +39,7 @@ class MongoDaoSpec extends AsyncFlatSpec with Matchers with BeforeAndAfterAll{
       })
   }
 
-  it should "not allow reserve fully-reserved movie" in newMovie { movie =>
+  it should "not allow reserve fully-reserved movie" taggedAs MongoDbTest in newMovie { movie =>
     Future.sequence((1 to movie.availableSeats).map(_ => dao.reserveSeat(movie._id)))
       .flatMap(_ => dao.findOne(movie._id))
       .map(res => {
