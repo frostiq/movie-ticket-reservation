@@ -17,9 +17,9 @@ class MovieTitleWebDaoSpec extends TestKit(ActorSystem("MovieTitleWebDaoSpec"))
 
   implicit val materializer = ActorMaterializer()
   val config = ConfigFactory.load()
-  val f = Http().singleRequest(_ : HttpRequest)
+  val requester = Http().singleRequest(_ : HttpRequest)
   val baseUri = Uri(config.getString("omdbapi.baseUrl"))
-  val dao: MovieTitleDao = new MovieTitleWebDao(f, baseUri, config.getString("omdbapi.apiKey"))
+  val dao: MovieTitleDao = new MovieTitleWebDao(requester, baseUri, config.getString("omdbapi.apiKey"))
 
   "MovieTitleWebDao" should "return title, if it exists" in {
     dao.find("tt0111161").map(s => {

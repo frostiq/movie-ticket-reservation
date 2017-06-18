@@ -26,9 +26,9 @@ object Main extends App with Routes with StrictLogging {
     val mongoClient = MongoClient(config.getString("mongodb.connectionString"))
     val movieDao = new MongoMovieDao(mongoClient.getDatabase(config.getString("mongodb.dbName")))
 
-    val f = Http().singleRequest(_: HttpRequest)
+    val requester = Http().singleRequest(_: HttpRequest)
     val baseUri = Uri(config.getString("omdbapi.baseUrl"))
-    val movieTitleDao: MovieTitleDao = new MovieTitleWebDao(f, baseUri, config.getString("omdbapi.apiKey"))
+    val movieTitleDao: MovieTitleDao = new MovieTitleWebDao(requester, baseUri, config.getString("omdbapi.apiKey"))
 
     override val movieService = system.actorOf(MovieServiceActor.props(movieDao, movieTitleDao))
 

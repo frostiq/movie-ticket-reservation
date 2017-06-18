@@ -11,6 +11,7 @@ import akka.http.scaladsl.server.ExceptionHandler
 import akka.http.scaladsl.server.Route
 import akka.pattern.ask
 import akka.util.Timeout
+import com.typesafe.scalalogging.StrictLogging
 import me.bazhanau.ticketreservation.conversion.JsonProtocol
 import me.bazhanau.ticketreservation.model.Movie
 import me.bazhanau.ticketreservation.model.MovieRegistration
@@ -23,7 +24,7 @@ import me.bazhanau.ticketreservation.service.MovieServiceActor.Reserve
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-trait Routes extends Directives with JsonProtocol {
+trait Routes extends Directives with JsonProtocol with StrictLogging {
 
   implicit val timeout: Timeout = 5.seconds
   protected val movieService: ActorRef
@@ -67,6 +68,9 @@ trait Routes extends Directives with JsonProtocol {
     ExceptionHandler {
       case ex@DuplicateMovieException(_) =>
         complete(HttpResponse(StatusCodes.BadRequest, entity = HttpEntity(ex.getMessage)))
+      case ex: Exception =>
+        logger.error("Failed to process request", ex)
+        complete(HttpResponse(StatusCodes.InternalServerError))
     }
 
 }
