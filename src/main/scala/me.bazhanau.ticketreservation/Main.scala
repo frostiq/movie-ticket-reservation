@@ -9,6 +9,8 @@ import akka.http.scaladsl.model.HttpRequest
 import akka.http.scaladsl.model.Uri
 import akka.stream.ActorMaterializer
 import me.bazhanau.ticketreservation.dao.MongoMovieDao
+import me.bazhanau.ticketreservation.dao.MovieTitleDao
+import me.bazhanau.ticketreservation.dao.MovieTitleWebDao
 import me.bazhanau.ticketreservation.routing.Routes
 import me.bazhanau.ticketreservation.service.MovieServiceActor
 import org.mongodb.scala.MongoClient
@@ -23,11 +25,12 @@ object Main extends App with Routes {
   Logger.getLogger("org.mongodb.driver").setLevel(Level.WARNING)
   val mongoClient = MongoClient()
   val movieDao = new MongoMovieDao(mongoClient.getDatabase("test"))
-  override val movieService = system.actorOf(MovieServiceActor.props(movieDao))
-
 
   val f = Http().singleRequest(_ : HttpRequest)
   val baseUri = Uri("http://www.omdbapi.com/")
+  val movieTitleDao: MovieTitleDao = new MovieTitleWebDao(f, baseUri, "289ba303")
+
+  override val movieService = system.actorOf(MovieServiceActor.props(movieDao, movieTitleDao))
 
   val bindingFuture = Http().bindAndHandle(routes, "localhost", 8080)
 
