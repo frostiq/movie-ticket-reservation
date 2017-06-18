@@ -1,7 +1,7 @@
 package me.bazhanau.ticketreservation.dao
 
-import me.bazhanau.ticketreservation.model.db.Movie
-import me.bazhanau.ticketreservation.model.db.MovieId
+import me.bazhanau.ticketreservation.model.mongo.Movie
+import me.bazhanau.ticketreservation.model.mongo.MovieId
 import org.mongodb.scala._
 import org.scalatest._
 
@@ -22,7 +22,7 @@ class MongoDaoSpec extends AsyncFlatSpec with Matchers with BeforeAndAfterAll{
   }
 
   it should "not allow to insert duplicate movie" in newMovie { movie =>
-    recoverToSucceededIf[MongoWriteException]{
+    recoverToSucceededIf[DuplicateMovieException]{
       dao.insert(movie)
     }
   }

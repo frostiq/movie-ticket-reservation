@@ -6,10 +6,9 @@ import akka.http.scaladsl.server.PathMatchers.Segment
 import akka.pattern.ask
 import akka.util.Timeout
 import me.bazhanau.ticketreservation.conversion.JsonProtocol
+import me.bazhanau.ticketreservation.model.Movie
 import me.bazhanau.ticketreservation.model.MovieRegistration
 import me.bazhanau.ticketreservation.model.MovieReservation
-import me.bazhanau.ticketreservation.model.db.Movie
-import me.bazhanau.ticketreservation.model.db.MovieId
 import me.bazhanau.ticketreservation.service.MovieServiceActor.FindOne
 import me.bazhanau.ticketreservation.service.MovieServiceActor.Register
 
@@ -23,7 +22,7 @@ class Routes(movieService: ActorRef) extends JsonProtocol {
     pathPrefix("movies") {
       get {
         path(Segment / Segment) { (imdbId: String, screenId: String) =>
-          val f = (movieService ? FindOne(MovieId(imdbId, screenId))).mapTo[Option[Movie]]
+          val f = (movieService ? FindOne(imdbId, screenId)).mapTo[Option[Movie]]
           onSuccess(f)(complete(_))
         }
       } ~
