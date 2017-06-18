@@ -6,6 +6,8 @@
 
 You need to have Java and sbt installed on your machine (tested with `Java v1.8.0_131` and `sbt v0.13.8`)
 
+Also you need to have running MongoDB on `localhost:27017` (you can change the address in the config)
+
 
 ## How to run:
 
@@ -31,6 +33,17 @@ Where:
 * `screenId` is an externally managed identifier of information when and where the movie is screened.
 * `availableSeats` the total seats available for this movie
 
+The result will be registered movie:
+```
+{
+    "imdbId":"tt0111161",
+    "screenId":"screen_123456",
+    "movieTitle":"The Shawshank Redemption",
+    "availableSeats":100,
+    "reservedSeats":0    
+}
+```
+
 ### Retrieve information about the movie
 
 ```
@@ -40,13 +53,13 @@ curl http://localhost:8080/movies/{imdbId}/{screenId}
 Example of the response:
 
 ```
-     {
-        "imdbId": "tt0111161",
-        "screenId": "screen_123456",
-        "movieTitle": "The Shawshank Redemption",
-        "availableSeats": 100,
-        "reservedSeats": 50
-     }   
+{
+   "imdbId": "tt0111161",
+   "screenId": "screen_123456",
+   "movieTitle": "The Shawshank Redemption",
+   "availableSeats": 100,
+   "reservedSeats": 0
+}   
 ```
 
 Where:
@@ -66,3 +79,16 @@ curl http://localhost:8080/reservations -H "Content-Type: application/json" \
 Where:
 * `imdbId` is IMDB movie identifier
 * `screenId` is an externally managed identifier of information when and where the movie is screened.
+
+The result will be updated movie with one newly reserved seat:
+
+```
+{
+    "imdbId":"tt0111161",
+    "screenId":"screen_123456",
+    "movieTitle":"The Shawshank Redemption",
+    "availableSeats":99,
+    "reservedSeats":1
+}
+
+```
