@@ -5,7 +5,7 @@ import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
 import com.typesafe.scalalogging.StrictLogging
 import me.bazhanau.ticketreservation.conversion.JsonProtocol
-import me.bazhanau.ticketreservation.model.OmdbResponse
+import me.bazhanau.ticketreservation.model.web.OmdbResponse
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future

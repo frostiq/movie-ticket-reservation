@@ -4,7 +4,7 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import me.bazhanau.ticketreservation.model.Movie
 import me.bazhanau.ticketreservation.model.MovieRegistration
 import me.bazhanau.ticketreservation.model.MovieReservation
-import me.bazhanau.ticketreservation.model.OmdbResponse
+import me.bazhanau.ticketreservation.model.web.OmdbResponse
 import spray.json._
 
 trait JsonProtocol extends SprayJsonSupport with DefaultJsonProtocol {
