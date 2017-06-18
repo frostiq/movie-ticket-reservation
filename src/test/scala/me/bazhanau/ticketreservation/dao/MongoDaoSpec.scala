@@ -1,7 +1,8 @@
 package me.bazhanau.ticketreservation.dao
 
-import me.bazhanau.ticketreservation.model.mongo.Movie
-import me.bazhanau.ticketreservation.model.mongo.MovieId
+import me.bazhanau.ticketreservation.model.db.Movie
+import me.bazhanau.ticketreservation.model.db.MovieId
+import me.bazhanau.ticketreservation.service.DuplicateMovieException
 import org.mongodb.scala._
 import org.scalatest.Tag
 import org.scalatest._

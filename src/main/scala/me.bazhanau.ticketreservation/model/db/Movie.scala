@@ -1,4 +1,4 @@
-package me.bazhanau.ticketreservation.model.mongo
+package me.bazhanau.ticketreservation.model.db
 
 case class Movie(_id: MovieId, availableSeats: Int, reservedSeats: Int, movieTitle: String){
   type ViewModel = me.bazhanau.ticketreservation.model.Movie

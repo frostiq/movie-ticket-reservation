@@ -6,8 +6,8 @@ import akka.pattern.pipe
 import me.bazhanau.ticketreservation.dao.MovieDao
 import me.bazhanau.ticketreservation.model.MovieRegistration
 import me.bazhanau.ticketreservation.model.MovieReservation
-import me.bazhanau.ticketreservation.model.mongo.Movie
-import me.bazhanau.ticketreservation.model.mongo.MovieId
+import me.bazhanau.ticketreservation.model.db.Movie
+import me.bazhanau.ticketreservation.model.db.MovieId
 import me.bazhanau.ticketreservation.service.MovieServiceActor.FindOne
 import me.bazhanau.ticketreservation.service.MovieServiceActor.Register
 import me.bazhanau.ticketreservation.service.MovieServiceActor.Reserve
@@ -24,12 +24,13 @@ class MovieServiceActor(moviesDao: MovieDao) extends Actor{
         .map(_.map(_.toViewModel)) pipeTo sender()
 
     case Register(registration) =>
-      moviesDao.insert(Movie(
+      val movie: Movie = Movie(
         MovieId(registration.imdbId, registration.screenId),
         registration.availableSeats,
         0,
         "temp"
-      )) map(_.toViewModel) pipeTo sender()
+      )
+      moviesDao.insert(movie).map(_.toViewModel) pipeTo sender()
 
     case Reserve(reservation) =>
       moviesDao.reserveSeat(MovieId(
