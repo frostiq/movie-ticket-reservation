@@ -25,7 +25,7 @@ It will start HTTP server on localhost:8080
 
 ```
 curl http://localhost:8080/movies -H "Content-Type: application/json" \
--d '{ "imdbId": "tt0111161", "availableSeats": 100, "screenId": "screen_123456" }'
+-d '{ "imdbId": "tt0111161", "screenId": "screen_123456", "availableSeats": 100 }'
 ```
 
 Where:
