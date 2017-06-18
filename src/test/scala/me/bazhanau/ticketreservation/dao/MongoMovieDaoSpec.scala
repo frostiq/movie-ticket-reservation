@@ -1,28 +1,23 @@
 package me.bazhanau.ticketreservation.dao
 
+import me.bazhanau.ticketreservation.dao.util.MongoDbTest
+import me.bazhanau.ticketreservation.dao.util.MongoSpec
 import me.bazhanau.ticketreservation.model.db.Movie
 import me.bazhanau.ticketreservation.model.db.MovieId
 import me.bazhanau.ticketreservation.service.DuplicateMovieException
-import org.mongodb.scala._
-import org.scalatest.Tag
 import org.scalatest._
 
 import scala.concurrent.Future
 import scala.util.Random
 
-object MongoDbTest extends Tag("MongoDB test")
-
-class MongoDaoSpec extends AsyncFlatSpec with Matchers with BeforeAndAfterAll{
-
-  val client = MongoClient()
-  val dao: MovieDao = new MongoMovieDao(client.getDatabase("test"))
+class MongoMovieDaoSpec extends MongoSpec{
 
   "MongoDao" should "find movie after creation" taggedAs MongoDbTest in newMovie { movie =>
     dao.findOne(movie._id).map(_ shouldBe Some(movie))
   }
 
   it should "return None for non-existing movies" taggedAs MongoDbTest in {
-    dao.findOne(MovieId("x", "x")).map(_ shouldBe None)
+    dao.findOne(MovieId(Random.nextString(5), "x")).map(_ shouldBe None)
   }
 
   it should "not allow to insert duplicate movie" taggedAs MongoDbTest in newMovie { movie =>
@@ -62,8 +57,10 @@ class MongoDaoSpec extends AsyncFlatSpec with Matchers with BeforeAndAfterAll{
     dao.insert(movie).flatMap(testCode)
   }
 
-  override protected def afterAll(): Unit = {
-    try super.afterAll()
-    finally client.close()
+  var dao: MovieDao = _
+
+  override protected def beforeAll(): Unit = {
+    try super.beforeAll()
+    finally dao = new MongoMovieDao(db)
   }
 }
