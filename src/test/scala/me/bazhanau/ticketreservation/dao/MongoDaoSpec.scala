@@ -1,7 +1,7 @@
 package me.bazhanau.ticketreservation.dao
 
-import me.bazhanau.ticketreservation.models.db.Movie
-import me.bazhanau.ticketreservation.models.db.MovieId
+import me.bazhanau.ticketreservation.model.db.Movie
+import me.bazhanau.ticketreservation.model.db.MovieId
 import org.mongodb.scala._
 import org.scalatest._
 
@@ -11,10 +11,20 @@ import scala.util.Random
 class MongoDaoSpec extends AsyncFlatSpec with Matchers with BeforeAndAfterAll{
 
   val client = MongoClient()
-  val dao: MoviesDao = new MongoMoviesDao(client.getDatabase("test"))
+  val dao: MovieDao = new MongoMovieDao(client.getDatabase("test"))
 
   "MongoDao" should "find movie after creation" in newMovie { movie =>
     dao.findOne(movie._id).map(_ shouldBe Some(movie))
+  }
+
+  it should "return None for non-existing movies" in {
+    dao.findOne(MovieId("x", "x")).map(_ shouldBe None)
+  }
+
+  it should "not allow to insert duplicate movie" in newMovie { movie =>
+    recoverToSucceededIf[MongoWriteException]{
+      dao.insert(movie)
+    }
   }
 
   it should "decrease available seats after reservation" in newMovie { movie =>

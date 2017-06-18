@@ -1,3 +1,3 @@
-package me.bazhanau.ticketreservation.models.db
+package me.bazhanau.ticketreservation.model.db
 
 case class MovieId(imdbId: String, screenId: String)

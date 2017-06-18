@@ -1,8 +1,8 @@
 package me.bazhanau.ticketreservation.dao
 
 import me.bazhanau.ticketreservation.conversion.MongoCodecs
-import me.bazhanau.ticketreservation.models.db.Movie
-import me.bazhanau.ticketreservation.models.db.MovieId
+import me.bazhanau.ticketreservation.model.db.Movie
+import me.bazhanau.ticketreservation.model.db.MovieId
 import org.mongodb.scala.MongoCollection
 import org.mongodb.scala.MongoDatabase
 import org.mongodb.scala.model.Filters._
@@ -13,14 +13,14 @@ import org.mongodb.scala.model.Updates._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-trait MoviesDao{
+trait MovieDao{
   def findOne(id: MovieId): Future[Option[Movie]]
   def insert(movie: Movie): Future[Movie]
   def reserveSeat(id: MovieId): Future[Option[Movie]]
 }
 
-class MongoMoviesDao(db: MongoDatabase)(implicit executionContext: ExecutionContext)
-  extends MoviesDao with MongoCodecs{
+class MongoMovieDao(db: MongoDatabase)(implicit executionContext: ExecutionContext)
+  extends MovieDao with MongoCodecs{
 
   val collection: MongoCollection[Movie] = db.withCodecRegistry(codecRegistry).getCollection("movies")
 

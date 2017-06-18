@@ -1,10 +1,10 @@
 package me.bazhanau.ticketreservation.conversion
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import me.bazhanau.ticketreservation.models.MovieRegistration
-import me.bazhanau.ticketreservation.models.MovieReservation
-import me.bazhanau.ticketreservation.models.db.Movie
-import me.bazhanau.ticketreservation.models.db.MovieId
+import me.bazhanau.ticketreservation.model.MovieRegistration
+import me.bazhanau.ticketreservation.model.MovieReservation
+import me.bazhanau.ticketreservation.model.db.Movie
+import me.bazhanau.ticketreservation.model.db.MovieId
 import spray.json._
 
 class JsonProtocol extends SprayJsonSupport with DefaultJsonProtocol {
