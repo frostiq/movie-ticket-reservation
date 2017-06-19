@@ -65,7 +65,7 @@ class MovieServiceActorSpec extends ActorSpec with FlatSpecLike with ImplicitSen
     expectMsg(Some(movie.copy(availableSeats = 0, reservedSeats = 1).toViewModel))
   }
 
-  "MovieServiceActor.reserve" should "return None if movie not exists" in new Test {
+  it should "return None if movie not exists" in new Test {
     movieServiceActor ! Reserve(MovieReservation(id2.imdbId, id2.screenId))
 
     expectMsg(None)
