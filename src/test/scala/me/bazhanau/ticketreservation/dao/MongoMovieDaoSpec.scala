@@ -1,10 +1,10 @@
 package me.bazhanau.ticketreservation.dao
 
-import me.bazhanau.ticketreservation.dao.util.MongoDbTest
-import me.bazhanau.ticketreservation.dao.util.MongoSpec
 import me.bazhanau.ticketreservation.model.db.Movie
 import me.bazhanau.ticketreservation.model.db.MovieId
 import me.bazhanau.ticketreservation.service.DuplicateMovieException
+import me.bazhanau.ticketreservation.util.MongoDbTest
+import me.bazhanau.ticketreservation.util.MongoSpec
 import org.scalatest._
 
 import scala.concurrent.Future

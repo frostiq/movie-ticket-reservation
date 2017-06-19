@@ -1,4 +1,4 @@
-package me.bazhanau.ticketreservation.dao.util
+package me.bazhanau.ticketreservation.util
 
 import com.typesafe.config.ConfigFactory
 import org.mongodb.scala.MongoClient

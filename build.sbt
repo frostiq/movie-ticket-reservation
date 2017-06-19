@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.1.7",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
 
-  "org.scalatest" %% "scalatest" % "3.0.1" % "test",
-  "com.typesafe.akka" %% "akka-http-testkit" % "10.0.7" % "test"
+  "org.scalatest" %% "scalatest" % "3.0.1" % Test,
+  "org.scalamock" %% "scalamock-scalatest-support" % "3.5.0" % Test,
+  "com.typesafe.akka" %% "akka-http-testkit" % "10.0.7" % Test
 )
     

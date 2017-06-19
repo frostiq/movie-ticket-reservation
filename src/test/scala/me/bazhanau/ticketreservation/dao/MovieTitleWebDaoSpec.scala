@@ -1,22 +1,15 @@
 package me.bazhanau.ticketreservation.dao
 
-import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpRequest
 import akka.http.scaladsl.model.Uri
-import akka.stream.ActorMaterializer
-import akka.testkit.TestKit
-import com.typesafe.config.ConfigFactory
-import org.scalatest._
+import me.bazhanau.ticketreservation.util.ActorSpec
+import org.scalatest.AsyncFlatSpecLike
 
 import scala.util.Random
 
-class MovieTitleWebDaoSpec extends TestKit(ActorSystem("MovieTitleWebDaoSpec"))
-  with Matchers
-  with AsyncFlatSpecLike {
+class MovieTitleWebDaoSpec extends ActorSpec with AsyncFlatSpecLike {
 
-  implicit val materializer = ActorMaterializer()
-  val config = ConfigFactory.load()
   val requester = Http().singleRequest(_ : HttpRequest)
   val baseUri = Uri(config.getString("omdbapi.baseUrl"))
   val dao: MovieTitleDao = new MovieTitleWebDao(requester, baseUri, config.getString("omdbapi.apiKey"))
