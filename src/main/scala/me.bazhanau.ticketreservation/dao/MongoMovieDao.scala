@@ -19,7 +19,8 @@ import scala.util.Failure
 class MongoMovieDao(db: MongoDatabase)(implicit executionContext: ExecutionContext)
   extends MovieDao with MongoCodecs{
 
-  val collection: MongoCollection[Movie] = db.withCodecRegistry(codecRegistry).getCollection("movies")
+  val collection: MongoCollection[Movie] =
+    db.withCodecRegistry(codecRegistry).getCollection("movies")
 
   override def findOne(id: MovieId): Future[Option[Movie]] = {
     collection.find(equal("_id", id))

@@ -5,7 +5,7 @@ import org.mongodb.scala.MongoClient
 import org.mongodb.scala.MongoDatabase
 import org.scalatest._
 
-abstract class MongoSpec extends AsyncFlatSpec
+trait MongoSpec extends AsyncFlatSpecLike
   with Matchers
   with BeforeAndAfterAll{
 
