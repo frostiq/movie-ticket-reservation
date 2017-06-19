@@ -23,6 +23,8 @@ import me.bazhanau.ticketreservation.service.MovieServiceActor.Reserve
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.util.Failure
+import scala.util.Success
 
 trait Routes extends Directives with JsonProtocol with StrictLogging {
 
@@ -59,9 +61,12 @@ trait Routes extends Directives with JsonProtocol with StrictLogging {
       }
 
   def complete[T: ToResponseMarshaller](result: Future[Option[T]]): Route =
-    onSuccess(result) {
-      case Some(res) => complete(ToResponseMarshallable(res))
-      case None => complete(HttpResponse(StatusCodes.NotFound))
+    onComplete(result) {
+      case Success(Some(res)) => complete(ToResponseMarshallable(res))
+      case Success(None) => complete(HttpResponse(StatusCodes.NotFound))
+      case Failure(ex) =>
+        logger.error("Failed to process request", ex)
+        complete(HttpResponse(StatusCodes.InternalServerError))
     }
 
   implicit def myExceptionHandler: ExceptionHandler =
