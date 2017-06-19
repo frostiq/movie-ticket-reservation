@@ -6,6 +6,7 @@ import akka.stream.Materializer
 import com.typesafe.scalalogging.StrictLogging
 import me.bazhanau.ticketreservation.conversion.JsonProtocol
 import me.bazhanau.ticketreservation.model.web.OmdbResponse
+import spray.json.DeserializationException
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -21,14 +22,24 @@ class MovieTitleWebDao(get: (HttpRequest) => Future[HttpResponse], baseUri: Uri,
       .flatMap( response => {
         response.status match {
           case StatusCodes.OK =>
-            Unmarshal(response.entity).to[OmdbResponse].map(_.Title).map(Some(_))
+            Unmarshal(response.entity)
+              .to[OmdbResponse]
+              .map(_.Title)
+              .map(Some(_))
+              .recover({case e: DeserializationException =>
+                logError(response, imdbId)
+                None
+              })
+
           case _ =>
-            logger.warn(s"Failed to retrieve movie title\n$response")
+            logError(response, imdbId)
             Future.successful[Option[String]](None)
         }
       })
   }
 
-
-
+  private def logError(response: HttpResponse, imdbId: String): Unit =
+  {
+    logger.warn(s"Failed to retrieve movie title with imdbId = $imdbId\n$response")
+  }
 }
