@@ -2,13 +2,11 @@ package me.bazhanau.ticketreservation.routing
 
 import akka.actor.ActorRef
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
-import akka.http.scaladsl.marshalling.ToResponseMarshaller
 import akka.http.scaladsl.model.HttpEntity
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives
 import akka.http.scaladsl.server.ExceptionHandler
-import akka.http.scaladsl.server.Route
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.StrictLogging
@@ -21,10 +19,7 @@ import me.bazhanau.ticketreservation.service.MovieServiceActor.FindOne
 import me.bazhanau.ticketreservation.service.MovieServiceActor.Register
 import me.bazhanau.ticketreservation.service.MovieServiceActor.Reserve
 
-import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
 
 trait Routes extends Directives with JsonProtocol with StrictLogging {
 
@@ -35,16 +30,22 @@ trait Routes extends Directives with JsonProtocol with StrictLogging {
     pathPrefix("movies") {
       get {
         path(Segment / Segment) { (imdbId: String, screenId: String) =>
-          val res = (movieService ? FindOne(imdbId, screenId)).mapTo[Option[Movie]]
-          complete(res)
+          val future = (movieService ? FindOne(imdbId, screenId)).mapTo[Option[Movie]]
+          onSuccess(future){
+            case Some(res) => complete(ToResponseMarshallable(res))
+            case None => complete(HttpResponse(StatusCodes.NotFound))
+          }
         }
       } ~
         post {
           entity(as[MovieRegistration]) { registration =>
-            validate(
-              1 to 1000 contains registration.availableSeats,
-              "availableSeats must be from 1 to 1000"
-            ){
+            (validate(1 to 1000 contains registration.availableSeats,
+              "availableSeats must be from 1 to 1000") &
+              validate(registration.imdbId.length <= 30,
+              "imdbId is too long") &
+              validate(registration.screenId.length <= 30,
+              "screenId is too long")) {
+
               val res = (movieService ? Register(registration)).mapTo[Movie]
               onSuccess(res)(complete(_))
             }
@@ -54,20 +55,14 @@ trait Routes extends Directives with JsonProtocol with StrictLogging {
       path("reservations") {
         post {
           entity(as[MovieReservation]) { reservation =>
-            val res = (movieService ? Reserve(reservation)).mapTo[Option[Movie]]
-            complete(res)
+            val future = (movieService ? Reserve(reservation)).mapTo[Option[Movie]]
+            onSuccess(future){
+              case Some(res) => complete(res)
+              case None => complete(HttpResponse(StatusCodes.BadRequest))
+            }
           }
         }
       }
-
-  def complete[T: ToResponseMarshaller](result: Future[Option[T]]): Route =
-    onComplete(result) {
-      case Success(Some(res)) => complete(ToResponseMarshallable(res))
-      case Success(None) => complete(HttpResponse(StatusCodes.NotFound))
-      case Failure(ex) =>
-        logger.error("Failed to process request", ex)
-        complete(HttpResponse(StatusCodes.InternalServerError))
-    }
 
   implicit def myExceptionHandler: ExceptionHandler =
     ExceptionHandler {
