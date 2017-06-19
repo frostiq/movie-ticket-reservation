@@ -3,7 +3,7 @@ package me.bazhanau.ticketreservation.dao
 import me.bazhanau.ticketreservation.model.db.Movie
 import me.bazhanau.ticketreservation.model.db.MovieId
 import me.bazhanau.ticketreservation.service.DuplicateMovieException
-import me.bazhanau.ticketreservation.util.MongoDbTest
+import me.bazhanau.ticketreservation.util.DbTest
 import me.bazhanau.ticketreservation.util.MongoSpec
 import org.scalatest._
 
@@ -12,21 +12,21 @@ import scala.util.Random
 
 class MongoMovieDaoSpec extends MongoSpec{
 
-  "MongoDao" should "find movie after creation" taggedAs MongoDbTest in newMovie { movie =>
+  "MongoDao" should "find movie after creation" taggedAs DbTest in newMovie { movie =>
     dao.findOne(movie._id).map(_ shouldBe Some(movie))
   }
 
-  it should "return None for non-existing movies" taggedAs MongoDbTest in {
+  it should "return None for non-existing movies" taggedAs DbTest in {
     dao.findOne(MovieId(Random.nextString(5), "x")).map(_ shouldBe None)
   }
 
-  it should "not allow to insert duplicate movie" taggedAs MongoDbTest in newMovie { movie =>
+  it should "not allow to insert duplicate movie" taggedAs DbTest in newMovie { movie =>
     recoverToSucceededIf[DuplicateMovieException]{
       dao.insert(movie)
     }
   }
 
-  it should "decrease available seats after reservation" taggedAs MongoDbTest in newMovie { movie =>
+  it should "decrease available seats after reservation" taggedAs DbTest in newMovie { movie =>
     dao.reserveSeat(movie._id)
       .map(res => {
         res shouldBe defined
@@ -35,7 +35,7 @@ class MongoMovieDaoSpec extends MongoSpec{
       })
   }
 
-  it should "not allow reserve fully-reserved movie" taggedAs MongoDbTest in newMovie { movie =>
+  it should "not allow reserve fully-reserved movie" taggedAs DbTest in newMovie { movie =>
     Future.sequence((1 to movie.availableSeats).map(_ => dao.reserveSeat(movie._id)))
       .flatMap(_ => dao.findOne(movie._id))
       .map(res => {
