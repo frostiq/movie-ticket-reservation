@@ -6,7 +6,7 @@
 
 You need to have Java and sbt installed on your machine (tested with `OpenJDK v1.8.0_131` and `sbt v0.13.8`)
 
-Also you need to have running MongoDB on `localhost:27017` (you can change the address in the config)
+Also, you need to have running MongoDB on `localhost:27017` (you can change the address in the config)
 
 If you have docker installed, you can run local MongoDB inside a container:
 
@@ -16,7 +16,7 @@ sudo docker run --name some-mongo -p 27017:27017 -d mongo
 
 ## How to run:
 
-Form the project folder execute next command in console:
+From the project folder you can run the next command in the console:
 
 ```
 sbt run
@@ -38,7 +38,7 @@ Where:
 * `screenId` is an externally managed identifier of information when and where the movie is screened.
 * `availableSeats` the total seats available for this movie
 
-The result will be registered movie:
+The result will be a registered movie:
 ```
 {
     "imdbId":"tt0111161",
@@ -55,7 +55,7 @@ The result will be registered movie:
 curl http://localhost:8080/movies/{imdbId}/{screenId}
 ```
 
-Example of the response:
+An example of the response:
 
 ```
 {
