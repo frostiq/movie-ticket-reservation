@@ -11,7 +11,7 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>testFile.log</file>
+        <file>logfile.log</file>
         <append>true</append>
         <encoder>
             <pattern>
