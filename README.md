@@ -4,10 +4,15 @@
 
 ## Prerequisites:
 
-You need to have Java and sbt installed on your machine (tested with `Java v1.8.0_131` and `sbt v0.13.8`)
+You need to have Java and sbt installed on your machine (tested with `OpenJDK v1.8.0_131` and `sbt v0.13.8`)
 
 Also you need to have running MongoDB on `localhost:27017` (you can change the address in the config)
 
+If you have docker installed, you can run local MongoDB inside a container:
+
+```
+sudo docker run --name some-mongo -p 27017:27017 -d mongo
+```
 
 ## How to run:
 
