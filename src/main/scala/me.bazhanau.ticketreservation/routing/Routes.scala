@@ -33,7 +33,7 @@ trait Routes extends Directives with JsonProtocol with StrictLogging {
           val future = (movieService ? FindOne(imdbId, screenId)).mapTo[Option[Movie]]
           onSuccess(future){
             case Some(res) => complete(ToResponseMarshallable(res))
-            case None => complete(HttpResponse(StatusCodes.NotFound))
+            case None => complete(movieNotFoundResponse(imdbId, screenId))
           }
         }
       } ~
@@ -58,7 +58,7 @@ trait Routes extends Directives with JsonProtocol with StrictLogging {
             val future = (movieService ? Reserve(reservation)).mapTo[Option[Movie]]
             onSuccess(future){
               case Some(res) => complete(res)
-              case None => complete(HttpResponse(StatusCodes.BadRequest))
+              case None => complete(invalidReservationResponse)
             }
           }
         }
@@ -72,5 +72,11 @@ trait Routes extends Directives with JsonProtocol with StrictLogging {
         logger.error("Failed to process request", ex)
         complete(HttpResponse(StatusCodes.InternalServerError))
     }
+
+  def invalidReservationResponse = HttpResponse(StatusCodes.BadRequest,
+    entity = HttpEntity("Specified movie was not found or it is fully booked"))
+
+  def movieNotFoundResponse(imdbId: String, screenId: String) = HttpResponse(StatusCodes.NotFound,
+    entity = HttpEntity(s"Movie with imdbId=$imdbId and screenId=$screenId was not found"))
 
 }
